@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -16,12 +17,19 @@ namespace IndetityServer
 {
     public class Startup
     {
+        private readonly IConfiguration _config; 
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
        
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = _config.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(config =>
             {
-                config.UseInMemoryDatabase("Memory");
+                config.UseSqlServer("ConnectionString");
+                //config.UseInMemoryDatabase("Memory");
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>(config =>
@@ -40,11 +48,24 @@ namespace IndetityServer
                 config.LoginPath = "/Auth/Login";
             });
 
+            string assembly = typeof(Startup).Assembly.GetName().ToString();
             services.AddIdentityServer()
                 .AddAspNetIdentity<IdentityUser>()
-                .AddInMemoryApiResources(Configuration.GetApis()) //add apis
-                .AddInMemoryClients(Configuration.GetClients()) // add clients
-                .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
+                .AddTestUsers(Configuration.GetTestUsers())
+                 .AddConfigurationStore(options =>
+                 {
+                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                         sql => sql.MigrationsAssembly(assembly));
+                 })
+                  .AddOperationalStore(options =>
+                  {
+                      options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                          sql => sql.MigrationsAssembly(assembly));
+                  })
+            //.AddInMemoryApiResources(Configuration.GetApis()) //add apis
+                //.AddInMemoryClients(Configuration.GetClients()) // add clients
+               
+                //.AddInMemoryIdentityResources(Configuration.GetIdentityResources())
                 .AddDeveloperSigningCredential(); // create server key 
 
             services.AddControllersWithViews();

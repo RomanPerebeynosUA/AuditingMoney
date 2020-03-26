@@ -15,7 +15,16 @@ namespace IndetityServer
              new List<IdentityResource>
              {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
+                new IdentityResource
+                {
+                    Name = "rc.scope ",
+                    UserClaims = 
+                    {
+                        "rc.grandma"
+                    }
+
+                }
              };
         public static IEnumerable<ApiResource> GetApis() =>
             new List<ApiResource>
@@ -28,6 +37,7 @@ namespace IndetityServer
             {
                 new Client
                 {
+
                     // Потрібна інформація для індетнифікації клієнта 
                     ClientId = "client_id",
                     ClientSecrets = { new Secret("client_secret".ToSha256())}, 
@@ -48,13 +58,21 @@ namespace IndetityServer
                     // Отримання токену 
                     AllowedGrantTypes = GrantTypes.Code,
 
-                    RedirectUris = { "https://localhost:44357/signin-oidc" },
+                    RedirectUris = { "https://localhost:44387/signin-oidc" },
+
+                   
+
                     // access to some API
                     AllowedScopes = {"SpendingDiary",  
                         IdentityServer4.IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServer4.IdentityServerConstants.StandardScopes.Profile,
+                        "rc.scope",
                      },
                     RequireConsent = false,
+                   
+                     // puts all the claims in the id token     
+                  //  AlwaysIncludeUserClaimsInIdToken = true,
+
 
                 }
             };

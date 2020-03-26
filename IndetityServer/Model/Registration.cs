@@ -17,9 +17,9 @@ namespace IndetityServer.Model
         [DataType(DataType.Password)]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        //[Required]
+        //[DataType(DataType.EmailAddress)]
+        //public string Email { get; set; }
         public string ReturnUrl { get; set; }
     }
 }

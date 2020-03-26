@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using IndetityServer.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace IndetityServer.Data
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
-
+            
         }
     }
 }

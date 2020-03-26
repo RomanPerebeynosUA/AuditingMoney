@@ -38,6 +38,10 @@ namespace IndetityServer.Controllers
             {
                 return Redirect(vm.ReturnUrl);
             }
+            else if (result.IsLockedOut)
+            {
+
+            }
             return View();
         }
 
@@ -51,6 +55,7 @@ namespace IndetityServer.Controllers
         public async Task<IActionResult> Register(Registration vm)
         {
             //check if the model is valid
+            
             if (!ModelState.IsValid)
             {
                 return View(vm);
